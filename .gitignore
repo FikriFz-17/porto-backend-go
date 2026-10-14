@@ -1,2 +1,17 @@
-AGENT.md
+# Environment variables
 .env
+
+# Binary
+*.exe
+*.out
+main
+tmp/
+
+# Folder vendor
+vendor/
+
+# File sistem
+.DS_Store
+.vscode/
+.idea/
+AGENT.md
