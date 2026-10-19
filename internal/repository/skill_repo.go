@@ -5,9 +5,10 @@ import (
 
 	"gorm.io/gorm"
 )
-
 type SkillRepository interface {
 	FindAll() ([]entity.Skill, error)
+	Create(skill *entity.Skill) error
+	
 }
 
 type skillRepository struct {
@@ -16,6 +17,10 @@ type skillRepository struct {
 
 func NewSkillRepository(db *gorm.DB) SkillRepository {
 	return &skillRepository{db: db}
+}
+
+func (r *skillRepository) Create(skill *entity.Skill) error {
+	return r.db.Create(skill).Error
 }
 
 func (r *skillRepository) FindAll() ([]entity.Skill, error) {

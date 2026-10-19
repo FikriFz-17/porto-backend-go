@@ -3,7 +3,8 @@ package entity
 import "time"
 
 type Skill struct {
-	ID        string    `gorm:"primaryKey;type:varchar" json:"id"`
+	ID        uint      `gorm:"primaryKey;autoIncrement" json:"id"`
+	UUID      string    `gorm:"type:uuid;default:gen_random_uuid()" json:"uuid"`	  
 	Name      string    `gorm:"type:varchar" json:"name"`
 	Icon      string    `gorm:"type:text" json:"icon"`
 	CreatedAt time.Time `json:"created_at"`

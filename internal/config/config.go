@@ -8,6 +8,7 @@ import (
 type Config struct{
 	Port string
 	DBDSN string
+	JWTSecret string
 }
 
 func LoadConfig() *Config {
@@ -22,5 +23,5 @@ func LoadConfig() *Config {
 	if port == "" {
 		port = "8080"
 	}
-	return &Config{Port: port, DBDSN: dsn}
+	return &Config{Port: port, DBDSN: dsn, JWTSecret: os.Getenv("JWT_SECRET")}
 }

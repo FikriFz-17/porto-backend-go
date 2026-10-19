@@ -1,35 +1,51 @@
 package main
 
 import (
-	"porto-backend-go/internal/database"
 	"porto-backend-go/internal/config"
+	"porto-backend-go/internal/database"
 	"porto-backend-go/internal/handler"
 	"porto-backend-go/internal/repository"
 	"porto-backend-go/internal/route"
 	"porto-backend-go/internal/service"
+	"porto-backend-go/pkg/storage"
 
 	"github.com/gin-gonic/gin"
 )
 
 func main() {
-	// config
-	cfg:=config.LoadConfig()
-
-	// Database connection
+	// Load Config & Database
+	cfg := config.LoadConfig()
 	db := database.InitDB(cfg.DBDSN)
 
-	// Repository
+	storageService, err := storage.NewCloudinaryService()
+	if err != nil{
+		panic("Failed to Init Storage: " + err.Error())
+	}
+
+	// Wiring Modul Skill (Repo -> Service -> Handler)
 	skillRepo := repository.NewSkillRepository(db)
+	skillService := service.NewSkillService(skillRepo, storageService)
+	skillHandler := handler.NewSkillHandler(skillService)
 
-	// Service
-	skillService := service.NewSkillService(skillRepo)
+	// Wiring Modul Project (Repo -> Service -> Handler)
+	projectRepo := repository.NewProjectRepository(db)
+	projectService := service.NewProjectService(projectRepo)
+	projectHandler := handler.NewProjectHandler(projectService)
 
-	// Handler
-	handler := handler.NewSkillHandler(skillService)
+	userRepo := repository.NewUserRepository(db)
+	userService := service.NewAuthService(userRepo)
+	userHandler := handler.NewAuthHandler(userService)
 
-	// Router
+	// Setup Router
 	r := gin.Default()
-	route.SetupRoutes(r, handler)
 
-	r.Run(":8000")
+	// Setup Routes
+	route.SetupRoutes(r, &route.HandlerContainer{
+		Skill:   skillHandler,
+		Project: projectHandler,
+		Auth:    userHandler,
+	}, cfg.JWTSecret)
+
+	// Run Server
+	r.Run(":" + cfg.Port)
 }
