@@ -8,7 +8,9 @@ import (
 type SkillRepository interface {
 	FindAll() ([]entity.Skill, error)
 	Create(skill *entity.Skill) error
-	
+	Delete(uuid string) error
+	GetSkillByUUID(uuid string) (*entity.Skill, error)
+	Update(uuid string, name string, icon string) error
 }
 
 type skillRepository struct {
@@ -30,4 +32,21 @@ func (r *skillRepository) FindAll() ([]entity.Skill, error) {
 		return nil, err
 	}
 	return skills, nil
+}
+
+func (r *skillRepository) Delete(uuid string) error {
+	return r.db.Where("uuid = ?", uuid).Delete(&entity.Skill{}).Error
+}
+
+func (r *skillRepository) GetSkillByUUID(uuid string) (*entity.Skill, error) {
+	var skill entity.Skill
+	err := r.db.Where("uuid = ?", uuid).First(&skill).Error
+	if err != nil {
+		return nil, err
+	}
+	return &skill, nil
+}
+
+func (r *skillRepository) Update(uuid string, name string, icon string) error {
+	return r.db.Where("uuid = ?", uuid).Updates(entity.Skill{Name: name, Icon: icon}).Error
 }

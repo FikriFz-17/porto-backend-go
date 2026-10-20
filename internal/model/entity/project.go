@@ -12,8 +12,8 @@ type Project struct {
 	Title       string         `gorm:"type:varchar" json:"title"`
 	Description string         `gorm:"type:text" json:"description"`
 	Image       string         `gorm:"type:text" json:"image"`
-	Link        string         `gorm:"type:varchar" json:"link_url"`
-	Repo        string         `gorm:"type:varchar" json:"repo_url"`
+	Link        string         `gorm:"column:live_url;type:varchar" json:"live_url"`
+	Repo        string         `gorm:"column:repo_url;type:varchar" json:"repo_url"`
 	Category    datatypes.JSON `gorm:"type:json" json:"category"`
 	TechStack   datatypes.JSON `gorm:"type:json" json:"techstack"`
 	StartDate   time.Time      `gorm:"type:date" json:"start_date"`

@@ -10,5 +10,15 @@ type SkillResponse struct {
 
 type CreateSkillRequest struct {
 	Name     string                `form:"name" binding:"required"`
-	IconFile *multipart.FileHeader `form:"icon_file" binding:"required"`
+	IconFile *multipart.FileHeader `form:"icon" binding:"required"`
+}
+
+type UuidSkillRequest struct {
+	UUID string `uri:"uuid" binding:"required"`
+}
+
+type UpdateSkillRequest struct {
+	UUID     string                `json:"-"`
+	Name     string                `form:"name" json:"name" binding:"required"`
+	IconFile *multipart.FileHeader `form:"icon" `
 }

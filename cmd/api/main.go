@@ -29,7 +29,7 @@ func main() {
 
 	// Wiring Modul Project (Repo -> Service -> Handler)
 	projectRepo := repository.NewProjectRepository(db)
-	projectService := service.NewProjectService(projectRepo)
+	projectService := service.NewProjectService(projectRepo, storageService)
 	projectHandler := handler.NewProjectHandler(projectService)
 
 	userRepo := repository.NewUserRepository(db)

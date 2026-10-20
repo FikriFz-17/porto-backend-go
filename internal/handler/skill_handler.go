@@ -28,21 +28,10 @@ func (h *SkillHandler) GetAllSkills(c *gin.Context) {
 }
 
 func (h *SkillHandler) CreateSkill(c *gin.Context) {
-	name := c.PostForm("name")
-	if name == ""{
-		response.Error(c, http.StatusBadRequest, "Required Name")
+	var req dto.CreateSkillRequest
+	if err := c.ShouldBind(&req); err != nil {
+		response.Error(c, http.StatusBadRequest, err.Error())
 		return
-	}
-
-	file, err := c.FormFile("icon")
-	if err != nil {
-		response.Error(c, http.StatusBadRequest, "Required Icon Image")
-		return
-	}
-
-	req := dto.CreateSkillRequest{
-		Name: name,
-		IconFile: file,
 	}
 
 	res, err := h.service.CreateSkill(req)
@@ -53,3 +42,59 @@ func (h *SkillHandler) CreateSkill(c *gin.Context) {
 
 	response.Success(c, res)
 }
+
+func (h *SkillHandler) DeleteSkill(c *gin.Context) {
+	var req dto.UuidSkillRequest
+	if err := c.ShouldBindUri(&req); err != nil {
+		response.Error(c, http.StatusBadRequest, err.Error())
+		return
+	}
+
+	err := h.service.DeleteSkill(req)
+	if err != nil {
+		response.Error(c, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	response.Success(c, "Skill deleted successfully")
+}
+
+func (h *SkillHandler) GetSkillByUUID(c *gin.Context) {
+	var req dto.UuidSkillRequest
+	if err := c.ShouldBindUri(&req); err != nil {
+		response.Error(c, http.StatusBadRequest, err.Error())
+		return
+	}
+
+	res, err := h.service.GetSkillByUUID(req)
+	if err != nil {
+		response.Error(c, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	response.Success(c, res)
+}
+
+func (h *SkillHandler) UpdateSkill(c *gin.Context) {
+	uuid := c.Param("uuid")
+	if uuid == "" {
+		response.Error(c, http.StatusBadRequest, "UUID is required")
+		return
+	}
+
+	var req dto.UpdateSkillRequest
+	if err := c.ShouldBind(&req); err != nil {
+		response.Error(c, http.StatusBadRequest, err.Error())
+		return
+	}
+	req.UUID = uuid
+
+	res, err := h.service.UpdateSkill(req)
+	if err != nil {
+		response.Error(c, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	response.Success(c, res)
+}
+
