@@ -96,3 +96,13 @@ func (h *ProjectHandler) UpdateProject(c *gin.Context) {
 	response.Success(c, res)
 }
 
+func (h *ProjectHandler) GetLatestProjects(c *gin.Context) {
+	projects, err := h.service.GetLatestProjects()
+	if err != nil {
+		response.Error(c, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	response.Success(c, projects)
+}
+

@@ -12,6 +12,7 @@ type ProjectRepository interface {
 	Delete (uuid string) error
 	GetProjectByUUID(uuid string) (*entity.Project, error)
 	Update(uuid string, project *entity.Project) error
+	GetLatest() ([]entity.Project, error)
 }
 
 type projectRepository struct {
@@ -50,4 +51,23 @@ func (r *projectRepository) GetProjectByUUID(uuid string) (*entity.Project, erro
 
 func (r *projectRepository) Update(uuid string, project *entity.Project) error {
 	return r.db.Where("uuid = ?", uuid).Updates(project).Error
+}
+
+func (r *projectRepository) GetLatest() ([]entity.Project, error) {
+	var projects []entity.Project
+
+	query := `
+		SELECT 
+			uuid, title, description, image, tech_stack, category, 
+			repo_url, live_url, start_date, end_date
+		FROM projects
+		ORDER BY end_date DESC
+		LIMIT 6
+	`
+	
+	err := r.db.Raw(query).Scan(&projects).Error
+	if err != nil {
+		return nil, err
+	}
+	return projects, nil
 }

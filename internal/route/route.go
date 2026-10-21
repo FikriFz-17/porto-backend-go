@@ -41,6 +41,7 @@ func setupProjectRoutes(rg *gin.RouterGroup, h *handler.ProjectHandler, jwtSecre
 		projects.DELETE("/:uuid", middleware.AuthMiddleware(jwtSecret), h.DeleteProject)
 		projects.GET("/:uuid", h.GetProjectByUUID)
 		projects.PUT("/:uuid", middleware.AuthMiddleware(jwtSecret), h.UpdateProject)
+		projects.GET("/latest", h.GetLatestProjects)
 	}
 }
 

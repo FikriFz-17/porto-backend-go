@@ -1,0 +1,62 @@
+[
+  {
+    "job": "Backend Engineer",
+    "company": "PT Digital Solusi Nusantara",
+    "start_date": "2025-01-10T00:00:00Z",
+    "end_date": "2026-09-30T00:00:00Z"
+  },
+  {
+    "job": "Software Engineer Intern",
+    "company": "Department of Communication and Information",
+    "start_date": "2024-06-01T00:00:00Z",
+    "end_date": "2024-11-30T00:00:00Z"
+  },
+  {
+    "job": "Fullstack Web Developer",
+    "company": "Makers Institute",
+    "start_date": "2024-01-15T00:00:00Z",
+    "end_date": "2024-05-30T00:00:00Z"
+  },
+  {
+    "job": "AI & Software Research Intern",
+    "company": "Telkom University",
+    "start_date": "2023-08-01T00:00:00Z",
+    "end_date": "2023-12-31T00:00:00Z"
+  },
+  {
+    "job": "Junior Golang Developer",
+    "company": "Tech Kreasi Mandiri",
+    "start_date": "2023-02-01T00:00:00Z",
+    "end_date": "2023-07-31T00:00:00Z"
+  },
+  {
+    "job": "Frontend Web Developer",
+    "company": "Nusa Cipta Studio",
+    "start_date": "2022-08-15T00:00:00Z",
+    "end_date": "2023-01-15T00:00:00Z"
+  },
+  {
+    "job": "Web Development Mentor",
+    "company": "Informatika Learning Hub",
+    "start_date": "2022-03-01T00:00:00Z",
+    "end_date": "2022-07-30T00:00:00Z"
+  },
+  {
+    "job": "API Integration Specialist (Contract)",
+    "company": "Karya Data Analitika",
+    "start_date": "2021-09-01T00:00:00Z",
+    "end_date": "2022-02-28T00:00:00Z"
+  },
+  {
+    "job": "Junior Backend Developer",
+    "company": "Inovasi Piranti Lunak",
+    "start_date": "2021-02-15T00:00:00Z",
+    "end_date": "2021-08-31T00:00:00Z"
+  },
+  {
+    "job": "IT Support & System Administrator",
+    "company": "Mitra Sarana Informatika",
+    "start_date": "2020-07-01T00:00:00Z",
+    "end_date": "2021-01-31T00:00:00Z"
+  }
+]

@@ -15,6 +15,7 @@ type ProjectService interface {
 	DeleteProject(req dto.UuidProjectRequest) error
 	GetProjectByUUID(req dto.UuidProjectRequest) (*dto.ProjectResponse, error)
 	UpdateProject(req dto.UpdateProjectRequest) (*dto.ProjectResponse, error)
+	GetLatestProjects() ([]dto.ProjectResponse, error)
 }
 
 type projectService struct {
@@ -186,4 +187,30 @@ func (s *projectService) UpdateProject(req dto.UpdateProjectRequest) (*dto.Proje
 		EndDate:     project.EndDate,
 		Company:     project.Company,
 	}, nil
+}
+
+func (s *projectService) GetLatestProjects() ([]dto.ProjectResponse, error) {
+	projects, err := s.repo.GetLatest()
+	if err != nil {
+		return nil, err
+	}
+
+	var res []dto.ProjectResponse
+	for _, project := range projects {
+		res = append(res, dto.ProjectResponse{
+			UUID:        project.UUID,
+			Title:       project.Title,
+			Description: project.Description,
+			Image:       project.Image,
+			Link:        project.Link,
+			Repo:        project.Repo,
+			Category:    project.Category,
+			TechStack:   project.TechStack,
+			StartDate:   project.StartDate,
+			EndDate:     project.EndDate,
+			Company:     project.Company,
+		})
+	}
+
+	return res, nil
 }
