@@ -593,7 +593,7 @@ const docTemplate = `{
                     {
                         "type": "file",
                         "description": "File icon skill",
-                        "name": "image",
+                        "name": "icon",
                         "in": "formData",
                         "required": true
                     }
@@ -664,7 +664,7 @@ const docTemplate = `{
                     {
                         "type": "file",
                         "description": "File icon baru",
-                        "name": "image",
+                        "name": "icon",
                         "in": "formData"
                     }
                 ],

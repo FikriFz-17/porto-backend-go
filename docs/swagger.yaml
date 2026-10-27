@@ -411,7 +411,7 @@ paths:
         type: string
       - description: File icon skill
         in: formData
-        name: image
+        name: icon
         required: true
         type: file
       produces:
@@ -477,7 +477,7 @@ paths:
         type: string
       - description: File icon baru
         in: formData
-        name: image
+        name: icon
         type: file
       responses:
         "200":
