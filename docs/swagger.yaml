@@ -1,0 +1,499 @@
+basePath: /api
+definitions:
+  dto.CreateExperienceRequest:
+    properties:
+      company:
+        type: string
+      end_date:
+        type: string
+      job:
+        type: string
+      start_date:
+        type: string
+    required:
+    - company
+    - job
+    - start_date
+    type: object
+  dto.LoginRequest:
+    properties:
+      password:
+        type: string
+      username:
+        type: string
+    required:
+    - password
+    - username
+    type: object
+  dto.UpdateExperienceRequest:
+    properties:
+      company:
+        type: string
+      end_date:
+        type: string
+      job:
+        type: string
+      start_date:
+        type: string
+    type: object
+info:
+  contact: {}
+  description: Dokumentasi REST API Portfolio CMS Backend Golang
+  title: Portfolio CMS API
+  version: "1.0"
+paths:
+  /auth/login:
+    post:
+      consumes:
+      - application/json
+      description: Autentikasi admin untuk mendapatkan JWT Bearer token
+      parameters:
+      - description: Login Credentials
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.LoginRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Login Admin
+      tags:
+      - Auth
+  /experiences:
+    get:
+      parameters:
+      - description: Halaman
+        in: query
+        name: page
+        type: integer
+      - description: Limit
+        in: query
+        name: limit
+        type: integer
+      - description: Cari posisi pekerjaan atau nama perusahaan
+        in: query
+        name: search
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Ambil daftar riwayat pengalaman kerja
+      tags:
+      - Experiences
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Payload data pengalaman kerja
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.CreateExperienceRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Tambah pengalaman kerja baru
+      tags:
+      - Experiences
+  /experiences/{uuid}:
+    delete:
+      parameters:
+      - description: UUID Experience
+        in: path
+        name: uuid
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Hapus pengalaman kerja
+      tags:
+      - Experiences
+    get:
+      parameters:
+      - description: UUID Experience
+        in: path
+        name: uuid
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Detail pengalaman kerja
+      tags:
+      - Experiences
+    put:
+      consumes:
+      - application/json
+      parameters:
+      - description: UUID Experience
+        in: path
+        name: uuid
+        required: true
+        type: string
+      - description: Payload data update pengalaman
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.UpdateExperienceRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Perbarui pengalaman kerja
+      tags:
+      - Experiences
+  /projects:
+    get:
+      parameters:
+      - description: Halaman
+        in: query
+        name: page
+        type: integer
+      - description: Limit
+        in: query
+        name: limit
+        type: integer
+      - description: Cari judul/perusahaan project
+        in: query
+        name: search
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Ambil daftar projects
+      tags:
+      - Projects
+    post:
+      consumes:
+      - multipart/form-data
+      parameters:
+      - description: Judul project
+        in: formData
+        name: title
+        required: true
+        type: string
+      - description: Deskripsi project
+        in: formData
+        name: description
+        required: true
+        type: string
+      - description: File gambar cover project
+        in: formData
+        name: image
+        required: true
+        type: file
+      - description: URL Live Demo
+        in: formData
+        name: live_url
+        type: string
+      - description: URL Repository Git
+        in: formData
+        name: repo_url
+        type: string
+      - description: JSON array string kategori
+        in: formData
+        name: category
+        required: true
+        type: string
+      - description: JSON array string teknologi
+        in: formData
+        name: techstack
+        required: true
+        type: string
+      - description: Tanggal mulai (YYYY-MM-DD)
+        in: formData
+        name: start_date
+        required: true
+        type: string
+      - description: Tanggal selesai (YYYY-MM-DD)
+        in: formData
+        name: end_date
+        type: string
+      - description: Nama perusahaan
+        in: formData
+        name: company
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Tambah project baru
+      tags:
+      - Projects
+  /projects/{uuid}:
+    delete:
+      parameters:
+      - description: UUID Project
+        in: path
+        name: uuid
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Hapus project
+      tags:
+      - Projects
+    get:
+      parameters:
+      - description: UUID Project
+        in: path
+        name: uuid
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Detail project
+      tags:
+      - Projects
+    put:
+      consumes:
+      - multipart/form-data
+      parameters:
+      - description: UUID Project
+        in: path
+        name: uuid
+        required: true
+        type: string
+      - description: Judul project
+        in: formData
+        name: title
+        type: string
+      - description: Deskripsi project
+        in: formData
+        name: description
+        type: string
+      - description: File gambar baru
+        in: formData
+        name: image
+        type: file
+      - description: URL Live Demo
+        in: formData
+        name: live_url
+        type: string
+      - description: URL Repository Git
+        in: formData
+        name: repo_url
+        type: string
+      - description: JSON array string kategori
+        in: formData
+        name: category
+        type: string
+      - description: JSON array string teknologi
+        in: formData
+        name: techstack
+        type: string
+      - description: Tanggal mulai (YYYY-MM-DD)
+        in: formData
+        name: start_date
+        type: string
+      - description: Tanggal selesai (YYYY-MM-DD)
+        in: formData
+        name: end_date
+        type: string
+      - description: Nama perusahaan
+        in: formData
+        name: company
+        type: string
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Perbarui project
+      tags:
+      - Projects
+  /projects/latest:
+    get:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Ambil 6 project terbaru
+      tags:
+      - Projects
+  /skills:
+    get:
+      parameters:
+      - description: Halaman
+        in: query
+        name: page
+        type: integer
+      - description: Limit
+        in: query
+        name: limit
+        type: integer
+      - description: Cari nama skill
+        in: query
+        name: search
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Ambil daftar skills
+      tags:
+      - Skills
+    post:
+      consumes:
+      - multipart/form-data
+      parameters:
+      - description: Nama skill
+        in: formData
+        name: name
+        required: true
+        type: string
+      - description: File icon skill
+        in: formData
+        name: image
+        required: true
+        type: file
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Tambah skill baru
+      tags:
+      - Skills
+  /skills/{uuid}:
+    delete:
+      parameters:
+      - description: UUID Skill
+        in: path
+        name: uuid
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Hapus skill
+      tags:
+      - Skills
+    get:
+      parameters:
+      - description: UUID Skill
+        in: path
+        name: uuid
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Detail skill
+      tags:
+      - Skills
+    put:
+      consumes:
+      - multipart/form-data
+      parameters:
+      - description: UUID Skill
+        in: path
+        name: uuid
+        required: true
+        type: string
+      - description: Nama skill
+        in: formData
+        name: name
+        type: string
+      - description: File icon baru
+        in: formData
+        name: image
+        type: file
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Perbarui skill
+      tags:
+      - Skills
+securityDefinitions:
+  BearerAuth:
+    description: 'format: Bearer <token_jwt>'
+    in: header
+    name: Authorization
+    type: apiKey
+swagger: "2.0"

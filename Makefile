@@ -6,3 +6,5 @@ migrate-up:
 	go run cmd/migrate/main.go up
 migrate-down:
 	go run cmd/migrate/main.go down
+swagger:
+	swag init -g cmd/api/main.go

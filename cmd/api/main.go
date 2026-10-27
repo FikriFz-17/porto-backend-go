@@ -1,6 +1,7 @@
 package main
 
 import (
+	"net/http"
 	"porto-backend-go/internal/config"
 	"porto-backend-go/internal/database"
 	"porto-backend-go/internal/handler"
@@ -10,9 +11,22 @@ import (
 	"porto-backend-go/internal/service"
 	"porto-backend-go/pkg/storage"
 
+	_ "porto-backend-go/docs"
+
+	swaggerFiles "github.com/swaggo/files"
+	ginSwagger "github.com/swaggo/gin-swagger"
+
 	"github.com/gin-gonic/gin"
 )
 
+// @title                      Portfolio CMS API
+// @version                    1.0
+// @description                Dokumentasi REST API Portfolio CMS Backend Golang
+// @BasePath                   /api
+// @securityDefinitions.apikey BearerAuth
+// @in                         header
+// @name                       Authorization
+// @description                format: Bearer <token_jwt>
 func main() {
 	// Load Config & Database
 	cfg := config.LoadConfig()
@@ -46,6 +60,12 @@ func main() {
 
 	// Add CORS middleware
 	r.Use(middleware.CORSMiddleware())
+
+	// Swagger Docs
+	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
+	r.GET("/api/docs", func(c *gin.Context) {
+		c.Redirect(http.StatusMovedPermanently, "/swagger/index.html")
+	})
 
 	// Setup Routes
 	route.SetupRoutes(r, &route.HandlerContainer{

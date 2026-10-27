@@ -1,4 +1,4 @@
-package handler
+﻿package handler
 
 import (
 	"net/http"
@@ -18,6 +18,15 @@ func NewSkillHandler(service service.SkillService) *SkillHandler {
 	return &SkillHandler{service: service}
 }
 
+// GetAllSkills godoc
+// @Summary      Ambil daftar skills
+// @Tags         Skills
+// @Produce      json
+// @Param        page    query    int    false "Halaman"
+// @Param        limit   query    int    false "Limit"
+// @Param        search  query    string false "Cari nama skill"
+// @Success      200     {object} map[string]interface{}
+// @Router       /skills [get]
 func (h *SkillHandler) GetAllSkills(c *gin.Context) {
 	var param pagination.QueryParams
 	if err := c.ShouldBindQuery(&param); err != nil {
@@ -33,6 +42,16 @@ func (h *SkillHandler) GetAllSkills(c *gin.Context) {
 	response.SuccessWithMeta(c, skills, meta)
 }
 
+// CreateSkill godoc
+// @Summary      Tambah skill baru
+// @Tags         Skills
+// @Security     BearerAuth
+// @Accept       multipart/form-data
+// @Produce      json
+// @Param        name  formData string true  "Nama skill"
+// @Param        image formData file   true  "File icon skill"
+// @Success      200   {object} map[string]interface{}
+// @Router       /skills [post]
 func (h *SkillHandler) CreateSkill(c *gin.Context) {
 	var req dto.CreateSkillRequest
 	if err := c.ShouldBind(&req); err != nil {
@@ -49,6 +68,13 @@ func (h *SkillHandler) CreateSkill(c *gin.Context) {
 	response.Success(c, res)
 }
 
+// DeleteSkill godoc
+// @Summary      Hapus skill
+// @Tags         Skills
+// @Security     BearerAuth
+// @Param        uuid path     string true "UUID Skill"
+// @Success      200  {object} map[string]interface{}
+// @Router       /skills/{uuid} [delete]
 func (h *SkillHandler) DeleteSkill(c *gin.Context) {
 	var req dto.UuidSkillRequest
 	if err := c.ShouldBindUri(&req); err != nil {
@@ -65,6 +91,12 @@ func (h *SkillHandler) DeleteSkill(c *gin.Context) {
 	response.Success(c, "Skill deleted successfully")
 }
 
+// GetSkillByUUID godoc
+// @Summary      Detail skill
+// @Tags         Skills
+// @Param        uuid path     string true "UUID Skill"
+// @Success      200  {object} map[string]interface{}
+// @Router       /skills/{uuid} [get]
 func (h *SkillHandler) GetSkillByUUID(c *gin.Context) {
 	var req dto.UuidSkillRequest
 	if err := c.ShouldBindUri(&req); err != nil {
@@ -81,6 +113,16 @@ func (h *SkillHandler) GetSkillByUUID(c *gin.Context) {
 	response.Success(c, res)
 }
 
+// UpdateSkill godoc
+// @Summary      Perbarui skill
+// @Tags         Skills
+// @Security     BearerAuth
+// @Accept       multipart/form-data
+// @Param        uuid  path     string true  "UUID Skill"
+// @Param        name  formData string false "Nama skill"
+// @Param        image formData file   false "File icon baru"
+// @Success      200   {object} map[string]interface{}
+// @Router       /skills/{uuid} [put]
 func (h *SkillHandler) UpdateSkill(c *gin.Context) {
 	uuid := c.Param("uuid")
 	if uuid == "" {
@@ -103,4 +145,3 @@ func (h *SkillHandler) UpdateSkill(c *gin.Context) {
 
 	response.Success(c, res)
 }
-

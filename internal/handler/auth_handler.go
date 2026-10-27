@@ -17,6 +17,15 @@ func NewAuthHandler(service service.AuthService) *AuthHandler {
 	return &AuthHandler{service: service}
 }
 
+// Login godoc
+// @Summary      Login Admin
+// @Description  Autentikasi admin untuk mendapatkan JWT Bearer token
+// @Tags         Auth
+// @Accept       json
+// @Produce      json
+// @Param        request body dto.LoginRequest true "Login Credentials"
+// @Success      200     {object} map[string]interface{}
+// @Router       /auth/login [post]
 func (h *AuthHandler) Login(c *gin.Context) {
 	var req dto.LoginRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
