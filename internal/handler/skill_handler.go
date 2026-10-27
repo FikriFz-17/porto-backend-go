@@ -48,9 +48,9 @@ func (h *SkillHandler) GetAllSkills(c *gin.Context) {
 // @Security     BearerAuth
 // @Accept       multipart/form-data
 // @Produce      json
-// @Param        name  formData string true  "Nama skill"
-// @Param        image formData file   true  "File icon skill"
-// @Success      200   {object} map[string]interface{}
+// @Param        name formData string true "Nama skill"
+// @Param        icon formData file   true "File icon skill"
+// @Success      200  {object} map[string]interface{}
 // @Router       /skills [post]
 func (h *SkillHandler) CreateSkill(c *gin.Context) {
 	var req dto.CreateSkillRequest
@@ -118,10 +118,10 @@ func (h *SkillHandler) GetSkillByUUID(c *gin.Context) {
 // @Tags         Skills
 // @Security     BearerAuth
 // @Accept       multipart/form-data
-// @Param        uuid  path     string true  "UUID Skill"
-// @Param        name  formData string false "Nama skill"
-// @Param        image formData file   false "File icon baru"
-// @Success      200   {object} map[string]interface{}
+// @Param        uuid path     string true  "UUID Skill"
+// @Param        name formData string false "Nama skill"
+// @Param        icon formData file   false "File icon baru"
+// @Success      200  {object} map[string]interface{}
 // @Router       /skills/{uuid} [put]
 func (h *SkillHandler) UpdateSkill(c *gin.Context) {
 	uuid := c.Param("uuid")
