@@ -5,10 +5,12 @@ import (
 	"porto-backend-go/internal/model/entity"
 	"porto-backend-go/internal/repository"
 	"porto-backend-go/pkg/storage"
+
+	"porto-backend-go/pkg/pagination"
 )
 
 type SkillService interface {
-	GetAllSkills() ([]dto.SkillResponse, error)
+	GetAllSkills(param pagination.QueryParams) ([]dto.SkillResponse, pagination.Meta, error)
 	CreateSkill(req dto.CreateSkillRequest) (*dto.SkillResponse, error)
 	DeleteSkill(req dto.UuidSkillRequest) error
 	GetSkillByUUID(req dto.UuidSkillRequest) (*dto.SkillResponse, error)
@@ -24,13 +26,13 @@ func NewSkillService(repo repository.SkillRepository, storage storage.StorageSer
 	return &skillService{repo: repo, storage: storage}
 }
 
-func (s *skillService) GetAllSkills() ([]dto.SkillResponse, error) {
-	skills, err := s.repo.FindAll()
+func (s *skillService) GetAllSkills(param pagination.QueryParams) ([]dto.SkillResponse, pagination.Meta, error) {
+	skills, total, err := s.repo.FindAll(param)
 	if err != nil {
-		return nil, err
+		return nil, pagination.Meta{}, err
 	}
 
-	var res []dto.SkillResponse
+	res := []dto.SkillResponse{}
 	for _, skill := range skills {
 		res = append(res, dto.SkillResponse{
 			UUID:    skill.UUID,
@@ -39,7 +41,8 @@ func (s *skillService) GetAllSkills() ([]dto.SkillResponse, error) {
 		})
 	}
 
-	return res, nil
+	meta := pagination.BuildMeta(total, param.GetPage(), param.GetLimit())
+	return res, meta, nil
 }
 
 func (s *skillService) CreateSkill(req dto.CreateSkillRequest) (*dto.SkillResponse, error) {

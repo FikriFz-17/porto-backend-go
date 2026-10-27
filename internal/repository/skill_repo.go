@@ -3,10 +3,12 @@ package repository
 import (
 	"porto-backend-go/internal/model/entity"
 
+	"porto-backend-go/pkg/pagination"
+
 	"gorm.io/gorm"
 )
 type SkillRepository interface {
-	FindAll() ([]entity.Skill, error)
+	FindAll(param pagination.QueryParams) ([]entity.Skill, int64, error)
 	Create(skill *entity.Skill) error
 	Delete(uuid string) error
 	GetSkillByUUID(uuid string) (*entity.Skill, error)
@@ -25,13 +27,25 @@ func (r *skillRepository) Create(skill *entity.Skill) error {
 	return r.db.Create(skill).Error
 }
 
-func (r *skillRepository) FindAll() ([]entity.Skill, error) {
+func (r *skillRepository) FindAll(param pagination.QueryParams) ([]entity.Skill, int64, error) {
 	var skills []entity.Skill
-	err := r.db.Find(&skills).Error
-	if err != nil {
-		return nil, err
+	var total int64
+	query := r.db.Model(&entity.Skill{})
+	if param.Search != "" {
+		searchTerm := "%" + param.Search + "%"
+		query = query.Where("name ILIKE ?", searchTerm)
 	}
-	return skills, nil
+	if err := query.Count(&total).Error; err != nil {
+		return nil, 0, err
+	}
+	err := query.Order("created_at DESC").
+		Limit(param.GetLimit()).
+		Offset(param.GetOffset()).
+		Find(&skills).Error
+	if err != nil {
+		return nil, 0, err
+	}
+	return skills, total, nil
 }
 
 func (r *skillRepository) Delete(uuid string) error {

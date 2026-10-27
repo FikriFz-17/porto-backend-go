@@ -4,6 +4,7 @@ import (
 	"net/http"
 	"porto-backend-go/internal/model/dto"
 	"porto-backend-go/internal/service"
+	"porto-backend-go/pkg/pagination"
 	"porto-backend-go/pkg/response"
 
 	"github.com/gin-gonic/gin"
@@ -18,13 +19,18 @@ func NewProjectHandler(service service.ProjectService) *ProjectHandler {
 }
 
 func (h *ProjectHandler) GetAllProjects(c *gin.Context) {
-	projects, err := h.service.GetAllProjects()
+	var param pagination.QueryParams
+	if err := c.ShouldBindQuery(&param); err != nil {
+		response.Error(c, http.StatusBadRequest, err.Error())
+		return
+	}
+	projects, meta, err := h.service.GetAllProjects(param)
 	if err != nil {
 		response.Error(c, http.StatusInternalServerError, err.Error())
 		return
 	}
 
-	response.Success(c, projects)
+	response.SuccessWithMeta(c, projects, meta)
 }
 
 func (h *ProjectHandler) CreateProject(c *gin.Context) {

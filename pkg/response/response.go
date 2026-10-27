@@ -12,6 +12,13 @@ func Success(c *gin.Context, data interface{}) {
 	})
 }
 
+func SuccessWithMeta(c *gin.Context, data interface{}, meta interface{}) {
+	c.JSON(http.StatusOK, gin.H{
+		"data": data,
+		"meta": meta,
+	})
+}
+
 func Error(c *gin.Context, statusCode int, message string) {
 	c.JSON(statusCode, gin.H{
 		"error": message,

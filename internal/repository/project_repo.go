@@ -3,13 +3,15 @@ package repository
 import (
 	"porto-backend-go/internal/model/entity"
 
+	"porto-backend-go/pkg/pagination"
+
 	"gorm.io/gorm"
 )
 
 type ProjectRepository interface {
-	FindAll() ([]entity.Project, error)
+	FindAll(param pagination.QueryParams) ([]entity.Project, int64, error)
 	Create(project *entity.Project) error
-	Delete (uuid string) error
+	Delete(uuid string) error
 	GetProjectByUUID(uuid string) (*entity.Project, error)
 	Update(uuid string, project *entity.Project) error
 	GetLatest() ([]entity.Project, error)
@@ -23,13 +25,25 @@ func NewProjectRepository(db *gorm.DB) ProjectRepository {
 	return &projectRepository{db: db}
 }
 
-func (r *projectRepository) FindAll() ([]entity.Project, error) {
+func (r *projectRepository) FindAll(param pagination.QueryParams) ([]entity.Project, int64, error) {
 	var projects []entity.Project
-	err := r.db.Find(&projects).Error
-	if err != nil {
-		return nil, err
+	var total int64
+	query := r.db.Model(&entity.Project{})
+	if param.Search != "" {
+		searchTerm := "%" + param.Search + "%"
+		query = query.Where("title ILIKE ?", searchTerm)
 	}
-	return projects, nil
+	if err := query.Count(&total).Error; err != nil {
+		return nil, 0, err
+	}
+	err := query.Order("created_at DESC").
+		Limit(param.GetLimit()).
+		Offset(param.GetOffset()).
+		Find(&projects).Error
+	if err != nil {
+		return nil, 0, err
+	}
+	return projects, total, nil
 }
 
 func (r *projectRepository) Create(project *entity.Project) error {

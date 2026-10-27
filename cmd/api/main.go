@@ -4,6 +4,7 @@ import (
 	"porto-backend-go/internal/config"
 	"porto-backend-go/internal/database"
 	"porto-backend-go/internal/handler"
+	"porto-backend-go/internal/middleware"
 	"porto-backend-go/internal/repository"
 	"porto-backend-go/internal/route"
 	"porto-backend-go/internal/service"
@@ -36,14 +37,22 @@ func main() {
 	userService := service.NewAuthService(userRepo)
 	userHandler := handler.NewAuthHandler(userService)
 
+	experienceRepo := repository.NewExperienceRepository(db)
+	experienceService := service.NewExperienceService(experienceRepo)
+	experienceHandler := handler.NewExperienceHandler(experienceService)
+
 	// Setup Router
 	r := gin.Default()
+
+	// Add CORS middleware
+	r.Use(middleware.CORSMiddleware())
 
 	// Setup Routes
 	route.SetupRoutes(r, &route.HandlerContainer{
 		Skill:   skillHandler,
 		Project: projectHandler,
 		Auth:    userHandler,
+		Experience: experienceHandler,
 	}, cfg.JWTSecret)
 
 	// Run Server

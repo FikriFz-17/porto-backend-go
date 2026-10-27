@@ -6,11 +6,13 @@ import (
 	"porto-backend-go/internal/repository"
 	"porto-backend-go/pkg/storage"
 
+	"porto-backend-go/pkg/pagination"
+
 	"gorm.io/datatypes"
 )
 
 type ProjectService interface {
-	GetAllProjects() ([]dto.ProjectResponse, error)
+	GetAllProjects(param pagination.QueryParams) ([]dto.ProjectResponse, pagination.Meta, error)
 	CreateProject(req dto.CreateProjectRequest) (*dto.ProjectResponse, error)
 	DeleteProject(req dto.UuidProjectRequest) error
 	GetProjectByUUID(req dto.UuidProjectRequest) (*dto.ProjectResponse, error)
@@ -27,13 +29,13 @@ func NewProjectService(repo repository.ProjectRepository, storage storage.Storag
 	return &projectService{repo: repo, storage: storage}
 }
 
-func (s *projectService) GetAllProjects() ([]dto.ProjectResponse, error) {
-	projects, err := s.repo.FindAll()
+func (s *projectService) GetAllProjects(param pagination.QueryParams) ([]dto.ProjectResponse, pagination.Meta, error) {
+	projects, total, err := s.repo.FindAll(param)
 	if err != nil {
-		return nil, err
+		return nil, pagination.Meta{}, err
 	}
 
-	var res []dto.ProjectResponse
+	res := []dto.ProjectResponse{}
 	for _, project := range projects {
 		res = append(res, dto.ProjectResponse{
 			UUID:        project.UUID,
@@ -50,7 +52,8 @@ func (s *projectService) GetAllProjects() ([]dto.ProjectResponse, error) {
 		})
 	}
 
-	return res, nil
+	meta := pagination.BuildMeta(total, param.GetPage(), param.GetLimit())
+	return res, meta, nil
 }
 
 func (s *projectService) CreateProject(req dto.CreateProjectRequest) (*dto.ProjectResponse, error) {

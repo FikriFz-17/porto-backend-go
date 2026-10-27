@@ -11,6 +11,7 @@ type HandlerContainer struct {
 	Skill   *handler.SkillHandler
 	Project *handler.ProjectHandler
 	Auth    *handler.AuthHandler
+	Experience *handler.ExperienceHandler
 }
 
 func SetupRoutes(r *gin.Engine, h *HandlerContainer, jwtSecret string) {
@@ -19,6 +20,7 @@ func SetupRoutes(r *gin.Engine, h *HandlerContainer, jwtSecret string) {
 		setupSkillRoutes(api, h.Skill, jwtSecret)
 		setupProjectRoutes(api, h.Project, jwtSecret)
 		SetupAuthRoutes(api, h.Auth)
+		setupExperienceRoutes(api, h.Experience, jwtSecret)
 	}
 }
 
@@ -49,5 +51,16 @@ func SetupAuthRoutes(rg *gin.RouterGroup, h *handler.AuthHandler){
 	auth := rg.Group("/auth")
 	{
 		auth.POST("/login", h.Login)
+	}
+}
+
+func setupExperienceRoutes(rg *gin.RouterGroup, h *handler.ExperienceHandler, jwtSecret string) {
+	experiences := rg.Group("/experiences")
+	{
+		experiences.GET("", h.GetAllExperience)
+		experiences.POST("", middleware.AuthMiddleware(jwtSecret), h.CreateExperience)
+		experiences.DELETE("/:uuid", middleware.AuthMiddleware(jwtSecret), h.DeleteExperience)
+		experiences.GET("/:uuid", h.GetExperienceByUUID)
+		experiences.PUT("/:uuid", middleware.AuthMiddleware(jwtSecret), h.UpdateExperience)
 	}
 }

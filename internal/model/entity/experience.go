@@ -8,5 +8,5 @@ type Experience struct {
 	Job       string    `gorm:"column:job;type:varchar" json:"job"`
 	Company   string    `gorm:"column:company;type:varchar" json:"company"`
 	StartDate time.Time `gorm:"column:start_date;type:date" json:"start_date"`
-	EndDate   time.Time `gorm:"column:end_date;type:date" json:"end_date"`
+	EndDate   *time.Time `gorm:"column:end_date;type:date" json:"end_date"`
 }
