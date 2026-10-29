@@ -10,11 +10,13 @@ import (
 	"porto-backend-go/internal/route"
 	"porto-backend-go/internal/service"
 	"porto-backend-go/pkg/storage"
+	"time"
 
 	_ "porto-backend-go/docs"
 
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
+	"golang.org/x/time/rate"
 
 	"github.com/gin-gonic/gin"
 )
@@ -57,9 +59,18 @@ func main() {
 
 	// Setup Router
 	r := gin.Default()
+	_ = r.SetTrustedProxies([]string{
+		"127.0.0.1",    // Localhost IPv4
+		"::1",          // Localhost IPv6
+		"10.0.0.0/8",   // Subnet private / Docker network
+		"172.16.0.0/12",// Subnet default Docker
+	})
 
 	// Add CORS middleware
 	r.Use(middleware.CORSMiddleware())
+
+	// Add Rate Limiting middleware (60 requests per minute per IP)
+	r.Use(middleware.RateLimiter(rate.Every(time.Minute/60), 10))
 
 	// Swagger Docs
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
