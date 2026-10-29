@@ -2,12 +2,14 @@ package middleware
 
 import (
 	"net/http"
+	"strings"
 	"sync"
 	"time"
 
+	"porto-backend-go/pkg/response"
+
 	"github.com/gin-gonic/gin"
 	"golang.org/x/time/rate"
-	"porto-backend-go/pkg/response"
 )
 
 type client struct {
@@ -33,7 +35,15 @@ func RateLimiter(r rate.Limit, b int) gin.HandlerFunc {
 	}()
 
 	return func(c *gin.Context) {
-		ip := c.ClientIP()
+		ip := c.GetHeader("CF-Connecting-IP")
+		if ip == "" {
+			if xff := c.GetHeader("X-Forwarded-For"); xff != "" {
+				ip = strings.TrimSpace(strings.Split(xff, ",")[0])
+			}
+		}
+		if ip == "" {
+			ip = c.ClientIP()
+		}
 
 		mu.Lock()
 		cl, exists := clients[ip]
